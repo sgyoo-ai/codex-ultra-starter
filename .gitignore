@@ -1,0 +1,10 @@
+# Local execution, backups, and credentials are not template sources.
+.runtime/
+local-backups/
+__pycache__/
+*.pyc
+.DS_Store
+.env
+.env.*
+!.env.example
+# .codex/config.toml and .codex/agents/*.toml are intentional template files.
