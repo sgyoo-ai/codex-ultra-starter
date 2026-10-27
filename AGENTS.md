@@ -1,65 +1,65 @@
-# 프로젝트 공통 작업 규칙
+# Shared project work rules
 
-적용 범위는 이 파일이 있는 프로젝트와 하위 작업 폴더야. 다른 프로젝트나 사용자 전역 설정에 자동으로 확대 적용하지 마.
+These rules apply to the project containing this file and its working subdirectories. Do not automatically extend them to other projects or user-wide configuration.
 
-## 작업 범위·보호·기록
+## Scope, protection, and records
 
-- 한국어 반말로 결과와 이유부터 간결하게 설명해. 중요한 제약·근거·검증 범위는 생략하지 않아. 오래 걸리면 진행 상황을 짧게 알려줘.
-- 최신 사용자 요청과 이미 승인된 범위를 따라. 검토·설계 요청을 구현·배포 승인으로 확대하지 않고, 이미 받은 승인을 반복 요청하지 마.
-- 시작할 때 이 프로젝트의 README와 관련 작업·환경 문서를 필요한 범위만 읽어. 과거 실행 상태를 현재 사실로 단정하거나 다른 프로젝트의 기록·승인을 가져오지 마.
-- 수정 전 역할·입출력·호출자·관련 저장/복구 경로를 확인해. 기존 코드와 설치된 도구를 우선하고 추측으로 패치를 반복하지 마.
-- 사용자 자료·기존 파일·미커밋 변경·다른 작업자의 변경과 작동 중인 서비스를 보존해. 관련 없는 개선을 끼워 넣거나 다른 프로젝트·전역 설정을 임의 변경하지 않아.
-- 설치·과금·배포·외부 전송·기기/앱 조작·권한/네트워크/오디오 변경은 현재 요청의 허용 범위 안에서만 해. 광범위한 프로세스 종료를 하지 않고, 재시작은 대상·영향과 이미 승인된 범위를 확인해.
-- 비밀값·쿠키·개인 대화·전체 환경변수·Keychain·보호된 권한 DB를 조사 목적으로 수집하지 마.
-- 변경에 필요한 검증만 수행하고 불필요한 대규모 시험·모델 호출을 만들지 마. 긴 작업을 짧은 무응답만으로 실패로 판단하거나 종료하지 않아.
-- 실제 변경·검증·미확인을 구분해. 코드 작성·빌드·설치·실행·사용자 확인은 별도 단계야. 중요한 결정·완료/미완료·차단 원인·다음 행동은 프로젝트 문서에 남겨.
-- 별도 요청 없이 메모리 자동화·로그 수집기·스케줄러·상시 서비스를 설치하지 마.
+- Use the user's preferred language; default to English if no preference is established. Lead with results and reasons, and stay concise without omitting important constraints, evidence, or verification limits. Give brief updates during longer work.
+- Follow the latest user request and already authorized scope. Do not expand review or design requests into implementation or deployment approval, or repeatedly request approval already given.
+- Start by reading only the relevant portions of this project's README and work/environment documentation. Do not treat historical execution status as current evidence or import another project's records or approvals.
+- Before changing anything, identify its role, inputs, outputs, callers, and relevant persistence/recovery paths. Prefer existing code and installed tools; do not make repeated speculative patches.
+- Preserve user material, existing files, uncommitted and other workers' changes, and running services. Keep unrelated improvements separate and do not arbitrarily change other projects or global settings.
+- Installation, spending, deployment, external transmission, device/app operation, and permission/network/audio changes must remain within the current request's authorization. Avoid broad process termination. Before a restart, check its target, impact, and existing authorization.
+- Do not collect secrets, cookies, private conversations, full environments, Keychain contents, or protected permission databases for investigation.
+- Perform validation needed for the change. Avoid unnecessary large tests or model calls, and do not treat brief silence as a reason to fail or terminate a long-running task.
+- Distinguish actual changes, checks, and unknowns. Writing code, building, installing, running, and user confirmation are separate stages. Record important decisions, completion status, blockers, and next actions in project documentation.
+- Do not install memory automation, log collectors, schedulers, or resident services unless requested.
 
-## Ultra 역할 분담
+## Ultra role allocation
 
-- 이 프로젝트는 Ultra 역할 분담을 기본으로 사용해. 메인 모델·모드는 앱 선택을 유지하며, 현재 모드를 자동 감지한 것으로 간주하지 않아. 모드 확인을 위한 반복 질문·검색이나 감지기·버전 강제 패치·모델 캐시 변경은 하지 마.
-- 메인은 목표·제약·전체 맥락, 사용자 조율, 분담·의존성, 결정 기록, 결과 통합·최종 채택을 맡아. 짧고 명확하거나 긴밀하게 연결된 순차 작업은 직접 처리해.
-- 역할은 범용성과 예상 사용 빈도 순으로 설명해. 실제 선택은 작업 성격·필요한 판단·범위 확정 정도를 기준으로 하고, 아래 순서를 의무 단계나 호출 할당량으로 사용하지 마. 독립적으로 진행할 가치가 있는 작업만 위임해.
+- Use Ultra role allocation by default in this project. Keep the main model and mode selected in the app; do not assume automatic detection of the current mode. Do not repeatedly ask or search to identify it, or add detectors, version-forcing patches, or model-cache changes.
+- The main owns goals, constraints, overall context, user coordination, task allocation and dependencies, decision records, result integration, and final acceptance. It handles short, clear tasks and tightly coupled sequential work directly.
+- List roles by general applicability and expected frequency of use. Select by task type, judgment required, and how firmly scope is defined. Treat the order as guidance, not mandatory stages or call quotas. Delegate only work that is independently worthwhile.
 
-| 역할 | 모델 / 추론 강도 | 선택 기준 |
+| Role | Model / effort | Selection criteria |
 |---|---|---|
-| implementer | `gpt-6.1-sol` / `max` | 일반 상세 설계·구현 계약 초안, 코드 원인 분석·수정·필요한 검증 |
-| gui_operator | `gpt-6.1-terra` / `max` | 화면·브라우저·앱 조작, 시각 자료 해석, GUI 문제 재현·동작 확인 |
-| researcher | `gpt-6.1-sol` / `high` | 탐색 범위 결정·코드 경로 추적·여러 근거의 종합이 필요한 읽기 전용 조사 |
-| reviewer | `gpt-6.1-sol` / `max` | 작성자와 독립적으로 기존 요구·계약의 충족 여부와 결함 검토 |
-| luna_worker | `gpt-6-luna` / `max` | 계약·수정 파일·완료 조건이 확정된 작은 구현·반복 변경 |
-| luna_researcher | `gpt-6-luna` / `max` | 출처·질문·출력이 정해진 작은 추출·비교·정리·요약 |
-| architect | `gpt-6-astra` / `xhigh` | 핵심 구조·중요 계약의 선택·변경, 중대한 설계 충돌 해결 |
-| deep_reasoner | `gpt-6-astra` / `max` | 증거를 정리한 뒤에도 남는 특정 난제의 전제·반례·모순 검토 |
+| implementer | `gpt-6.1-sol` / `max` | Ordinary detailed design, implementation-contract drafts, code analysis, changes, and necessary validation |
+| gui_operator | `gpt-6.1-terra` / `max` | Screen, browser, and app interaction; visual interpretation; GUI reproduction and behavior checks |
+| researcher | `gpt-6.1-sol` / `high` | Read-only research requiring search-scope decisions, code-path tracing, or synthesis of multiple sources |
+| reviewer | `gpt-6.1-sol` / `max` | Independent checks of existing requirements, contracts, and defects |
+| luna_worker | `gpt-6-luna` / `max` | Small implementation or repetitive changes with a fixed contract, owned files, and acceptance criteria |
+| luna_researcher | `gpt-6-luna` / `max` | Bounded read-only extraction, comparison, organization, or summaries with specified sources, questions, and output |
+| architect | `gpt-6-astra` / `xhigh` | Choosing or changing core architecture and consequential contracts; resolving serious design conflicts |
+| deep_reasoner | `gpt-6-astra` / `max` | Examining assumptions, counterexamples, and contradictions in a specific hard question remaining after evidence is organized |
 
-- 일반 설계·구현은 implementer가 이어서 맡을 수 있어. 조사 결과만 필요하면 researcher, 수정까지 승인된 작업이면 implementer가 관련 분석을 이어가. 정해진 자료 추출·비교는 luna_researcher, 확정된 계약 안의 작은 변경은 luna_worker를 선택해.
-- Terra는 화면·시각 자료의 해석과 배정된 GUI 관측·조작·재현·동작 확인을 맡아. 목적에 맞는 연결 도구·API·CLI를 우선 활용해. 코드 원인 분석·수정·로컬 검증이 필요하면 메인에게 인계하고 해당 Sol 담당이 이어가. 동일 GUI·기기의 실행 순서는 메인이 정해.
-- 저장·내구성·입력 순서·인증·동시성·프로토콜·복구에 중요한 새 결정이 필요하면 초반부터 architect에게 맡겨. 영향 범위가 불명확하면 경계부터 정해. 최신 정보로 메인이 Astra Max임이 확인되고 해당 분담을 적용하는 경우 메인이 맡을 수 있어.
-- 기존 요구·계약 준수와 결함 검토는 reviewer, 계약 자체의 선택·변경이나 중요한 설계 충돌은 architect에 맡겨. 검토는 구체적인 영향에 맞춰 붙이고 원요구·실제 코드·호출/저장/복구 경로를 확인해. 여러 모델의 동의 자체를 증거로 삼지 마.
-- 자료 부족은 조사 담당이 보충하고, 증거가 충분한데도 남는 특정 난제는 deep_reasoner에 맡겨. 질문·제약·관측 사실·기각된 대안·남은 모순을 전달하고 실패 횟수를 채우려고 조사를 반복하지 마.
-- 역할별 산출물·인계 조건은 해당 TOML을 따라. 공통으로 실제 수행 내용·근거·검증 범위·미완료 사항을 보고하고 사실·추론·미확인을 구분해. GUI 성공을 코드 내부 계약 전체의 검증으로 확대하지 마.
+- Implementer may carry ordinary design through implementation. Use researcher for investigation-only results; when changes are authorized, implementer may continue the relevant analysis. Use luna_researcher for specified extraction/comparison and luna_worker for a small change under a fixed contract.
+- Terra interprets screens and visual material and performs assigned GUI observation, interaction, reproduction, and behavior checks. Prefer suitable connectors, APIs, or CLIs. Hand code analysis, changes, or local validation back to the main for the appropriate Sol owner. The main schedules work on the same GUI or device.
+- Assign architect early when a consequential new decision concerns persistence, durability, input ordering, authentication, concurrency, protocols, or recovery. If the impact is unclear, establish the boundary first. The main may take this responsibility when current evidence confirms it is Astra Max and that allocation applies.
+- Use reviewer to check existing requirements, contracts, and defects; use architect for choosing or changing the contract itself or resolving a serious design conflict. Scope review to concrete impact and check original requirements, actual code, callers, persistence, and recovery. Agreement among models is not evidence.
+- Have the research owner fill evidence gaps. When sufficient evidence still leaves a specific hard question, use deep_reasoner. Provide the question, constraints, observations, rejected alternatives, and remaining contradiction. Do not repeat research just to reach a failure count.
+- Follow each role's TOML for deliverables and handoff conditions. All roles report actual work, evidence, verification coverage, and unfinished work, separating facts, inferences, and unknowns. GUI success does not validate every internal code contract.
 
-## 역할 호출과 컨텍스트
+## Role invocation and context
 
-- `.codex/config.toml`과 `.codex/agents/*.toml`을 사용해. 일반 서브 기본값은 Sol 6.1 Max야. 역할별 모델·강도·지침은 해당 TOML을 따르고, 지원하지 않는 값을 몰래 대체하지 마.
-- 현재 도구의 명명 역할이 파일과 일치하면 사용해. 명명 역할이 없거나 오래된 정의라면 해당 TOML을 읽고 지원되는 명시 모델·강도 인자와 역할 지침을 전달해. 역할 이름만으로 로드를 가정하지 마.
-- 새 서브는 기본적으로 부모 대화 이력을 상속하지 않아. 실제 도구에 따라 `fork_turns="none"` 또는 `fork_context=false`를 명시해. 목표·필수 맥락·결정·제약·근거 위치·담당 파일·완료 기준·재위임 여부와 슬롯 수를 충분히 전달해.
-- 전체 이력이 필요하거나 사용자가 요청하면 `fork_turns="all"` 또는 `fork_context=true`를 명시하고 이유를 적어. 모델/강도 지정과 실제 충돌할 때만 필요한 근거 원문을 선별 전달해. 지원하지 않는 인자나 TOML 키를 만들지 마.
-- 기존 서브에는 필요한 맥락만 보충해. none/false는 새 서브의 부모 이력 상속 선택이며 기존 서브 이력을 지우지 않아.
+- Use `.codex/config.toml` and `.codex/agents/*.toml`. The general subagent default is Sol 6.1 Max. Follow the model, effort, and instructions in the role TOML, and do not silently replace unsupported values.
+- Use a named role when the tool exposes it and its actual definition matches the file. If unavailable or stale, read the TOML and pass supported explicit model/effort arguments and role instructions. A role name alone is not proof of loading.
+- By default, new subagents do not inherit the parent conversation. Explicitly use `fork_turns="none"` or `fork_context=false`, according to the actual tool. Supply sufficient goals, necessary context, decisions, constraints, evidence locations, owned files, acceptance criteria, delegation permission, and slot budget.
+- When full history is needed or requested by the user, explicitly use `fork_turns="all"` or `fork_context=true` and state why. Supply selected original evidence instead only when an actual conflict with model/effort selection is established. Do not invent unsupported arguments or TOML keys.
+- Send existing agents only necessary updates. The none/false choice controls parent-history inheritance for a new agent; it does not erase an existing agent's history.
 
-## 재위임과 동시 작업
+## Delegation and concurrent work
 
-- 메인은 작업에 맞는 역할을 직접 배정해. Sol/Astra 담당은 메인이 배정한 하위 슬롯 안에서만 luna_researcher 또는 luna_worker에 한 단계 재위임할 수 있어. 메인의 직접 Luna 배정도 허용해.
-- 읽기 전용 담당은 luna_researcher만 호출해. luna_worker에는 승인된 계약·소유 파일·완료 조건만 전달해. Luna도 일치하는 명명 역할 또는 명시 `gpt-6-luna` / `max`와 역할 지침으로 호출해.
-- Terra는 메인이 직접 배정하는 말단 역할이야. Sol/Astra 담당에게 GUI 작업이 필요하면 메인에게 요청하고, 메인이 Terra의 범위와 실행 순서를 정해. Terra와 Luna는 다른 에이전트를 생성하거나 재위임하지 않아.
-- 새 핵심 판단·범위 확대·전면 재작업이 필요하면 근거·선택지·질문을 메인에 반환하고 독립적인 승인 범위의 일은 계속해. 담당은 하위 결과의 핵심 근거·변경·검증을 확인하고 작성에 참여한 에이전트를 같은 변경의 독립 검토자로 사용하지 마.
-- 열린 서브는 메인 제외 최대 5개야. 하위 담당·대기 부모·완료했으나 닫지 않은 스레드도 포함해. 하위 위임·독립 검토 슬롯을 확보하고 Astra는 우선 1개만 운영해. 슬롯이 없으면 직접 처리하거나 조율하고 생성 재시도를 반복하지 마.
-- 동일 파일과 동일 GUI·기기·공유 실행 자원의 동시 변경을 피하고 기존 담당자를 재사용해. 다른 작업자의 변경을 보존하고 더 필요 없는 스레드는 결과 수합 후 닫아.
-- 읽기 전용·소유 파일·재위임 깊이는 행동 규칙이며 별도 권한 격리나 비용 상한이 아니야. 부모의 권한·승인 정책을 따라.
-- 문법 검사·실제 설정 로드·역할 노출·모델 실행을 구분해. 첫 필요한 실제 위임에서 적용을 확인하고 검증만을 위한 모델 호출은 만들지 마. 파일 변경이 기존 서브의 모델을 바꾼다고 가정하지 않아.
+- The main assigns the appropriate role directly. A Sol/Astra owner may delegate one level to luna_researcher or luna_worker only within child slots already allocated by the main. Direct main-to-Luna assignments are also allowed.
+- Read-only owners may invoke only luna_researcher. Give luna_worker only an approved contract, owned files, and acceptance criteria. Invoke Luna through a matching named role or explicit `gpt-6-luna` / `max` plus role instructions.
+- Terra is a leaf assigned directly by the main. Sol/Astra owners request GUI work through the main, which defines Terra's scope and execution order. Terra and Luna do not create agents or delegate further.
+- Return consequential new decisions, expanded scope, or wholesale rework to the main with evidence, options, and questions, while continuing independently authorized work. Owners verify core evidence, changes, and validation in child results. Do not use an authoring agent as the independent reviewer of that change.
+- At most 5 subagent threads may remain open, excluding the main. This includes descendants, waiting parents, and completed but unclosed threads. Reserve child-delegation and independent-review slots; start with only one Astra agent. If no slot is available, handle the task directly or coordinate rather than repeatedly retrying creation.
+- Avoid concurrent changes to the same files, GUI, device, or shared execution resource. Reuse existing owners, preserve other workers' changes, and close threads after collecting results when no longer needed.
+- Read-only scope, file ownership, and delegation depth are behavior rules, not independent permission isolation or cost caps. Follow the parent's permission and approval policy.
+- Distinguish syntax checks, actual configuration loading, role exposure, and model execution. Confirm application during the first genuinely needed delegation; do not create model calls solely for validation. Do not assume editing a role file changes an existing subagent's model.
 
-## 프로젝트별 보완
+## Project-specific additions
 
-- 이 프로젝트의 보존 대상·공유 자원·실행 절차·핵심 계약은 관련 프로젝트 문서에서 확인하고 작업 지시에 필요한 부분을 전달해.
-- 동일한 앱·브라우저·기기·빌드 출력·런타임 상태는 메인이 담당과 실행 순서를 정해. 배정되지 않은 담당이 동시에 변경·시험하지 마.
-- 이 템플릿은 분담 정책과 역할 정의야. 실제 도구·모델·권한·프로젝트 설정 로드는 해당 세션에서 확인하고, 호출 인자는 실제 노출된 도구 정의를 우선해.
+- Find preservation requirements, shared resources, execution procedures, and core contracts in the project's documentation and include the relevant parts in task assignments.
+- The main assigns ownership and execution order for shared apps, browsers, devices, build outputs, and runtime state. Unassigned owners must not change or test them concurrently.
+- This template defines allocation policy and roles. Confirm actual tools, models, permissions, and project configuration loading in the session, and use the tool schema actually exposed for invocation arguments.

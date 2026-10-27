@@ -1,5 +1,5 @@
 name = "reviewer"
-description = "작성자와 독립적으로 기존 요구·계약 준수와 실제 결함을 읽기 전용으로 검토할 때 선택한다. 계약 자체의 결정·변경은 architect 담당이다."
+description = "Independently review compliance with existing requirements and contracts and identify actual defects, read-only. Choosing or changing the contract itself belongs to architect."
 model = "gpt-6.1-sol"
 model_reasoning_effort = "max"
 

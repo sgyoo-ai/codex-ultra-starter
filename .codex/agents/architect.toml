@@ -1,5 +1,5 @@
 name = "architect"
-description = "핵심 구조·중요 계약 자체의 선택·변경이나 중대한 설계 충돌 해결에 선택한다. 정해진 계약의 준수·결함 검토는 reviewer 담당이다."
+description = "Use to choose or change core architecture and consequential contracts, or resolve serious design conflicts. Compliance and defect checks under an existing contract belong to reviewer."
 model = "gpt-6-astra"
 model_reasoning_effort = "xhigh"
 

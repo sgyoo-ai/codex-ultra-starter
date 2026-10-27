@@ -1,5 +1,5 @@
 name = "luna_researcher"
-description = "출처·질문·출력이 정해진 작은 읽기 전용 추출·비교·정리·요약에 선택한다. 탐색 범위 결정과 근거 종합은 researcher에 남기는 말단 역할이다."
+description = "Use for bounded read-only extraction, comparison, organization, and summaries with specified sources, questions, and output. A leaf role; search-scope decisions and evidence synthesis remain with researcher."
 model = "gpt-6-luna"
 model_reasoning_effort = "max"
 

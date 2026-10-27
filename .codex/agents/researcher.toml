@@ -1,5 +1,5 @@
 name = "researcher"
-description = "탐색 범위 결정·코드 경로 추적·여러 근거의 종합이 필요한 읽기 전용 조사에 선택한다. 지정 자료의 작은 추출·비교는 luna_researcher 담당이다."
+description = "Use for read-only research requiring search-scope decisions, code-path tracing, or synthesis of multiple sources. Bounded extraction and comparison from specified sources belong to luna_researcher."
 model = "gpt-6.1-sol"
 model_reasoning_effort = "high"
 

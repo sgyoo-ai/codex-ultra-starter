@@ -1,5 +1,5 @@
 name = "implementer"
-description = "일반 상세 설계·구현 계약 초안, 코드 원인 분석·수정·검증이 필요할 때 선택한다. 확정된 작은 변경은 luna_worker, 새 핵심 계약은 architect 담당이다."
+description = "Use for ordinary detailed design, implementation-contract drafts, code analysis, changes, and validation. Fixed small changes belong to luna_worker; consequential new contracts belong to architect."
 model = "gpt-6.1-sol"
 model_reasoning_effort = "max"
 

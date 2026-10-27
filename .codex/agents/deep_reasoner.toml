@@ -1,5 +1,5 @@
 name = "deep_reasoner"
-description = "증거를 정리한 뒤에도 남는 특정 난제의 전제·반례·모순 검토에 선택한다. 일반 조사나 전체 재설계를 반복하지 않는 읽기 전용 역할이다."
+description = "Examine assumptions, counterexamples, and contradictions in a specific hard question remaining after evidence is organized. A read-only role that avoids repeating general research or redesigning the whole system."
 model = "gpt-6-astra"
 model_reasoning_effort = "max"
 

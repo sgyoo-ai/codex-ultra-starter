@@ -1,5 +1,5 @@
 name = "luna_worker"
-description = "계약·수정 파일·완료 조건이 확정된 작은 구현·반복 변경에 선택한다. 상세 설계와 구현 판단은 implementer에 남기는 말단 역할이다."
+description = "Use for small implementation or repetitive changes with a fixed contract, owned files, and acceptance criteria. A leaf role; ordinary detailed design and implementation judgment remain with implementer."
 model = "gpt-6-luna"
 model_reasoning_effort = "max"
 

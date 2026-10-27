@@ -1,98 +1,106 @@
 # Codex Ultra Starter
 
-울트라 모드의 성능을 최대한 유지하면서, 작업에 맞는 모델과 역할을 배분해 사용량을 절약하기 위한 설정이야.
+English | [한국어](kr/README.md)
 
-## 사용 환경
+Settings for preserving as much Ultra-mode performance as possible while reducing usage through task-appropriate models and roles.
 
-- **GPT-6.1 Sol Ultra** 또는 **GPT-6 Astra Ultra**를 메인으로 사용하는 Codex 환경을 대상으로 해.
-- 메인 모델과 Ultra 모드는 Codex에서 선택하고, 서브에이전트의 모델·추론 강도는 아래 역할 설정을 따라.
+## Intended environment
 
-## 메인과 서브의 추론 강도
+- Codex with **GPT-6.1 Sol Ultra** or **GPT-6 Astra Ultra** as the main agent.
+- Select the main model and Ultra mode in Codex. Subagent models and reasoning efforts follow the role definitions below.
 
-**메인과 각 서브의 모델·추론 강도는 각각 정해져.** `multi_agent_reasoning_effort`는 각 에이전트의 최종 선택 강도가 `Ultra`일 때 실제 요청 강도로 변환하는 데 사용하는 모델별 메타데이터야. 메인과 서브 모두 이 변환 규칙을 사용하며, 각자 선택한 모델의 값을 읽어. [변환 코드](https://github.com/openai/codex/blob/6905ecede7816e91373e9eabda3f6b0368fc747b/codex-rs/protocol/src/openai_models/reasoning_effort.rs#L8-L38), [일반 요청 경로](https://github.com/openai/codex/blob/6905ecede7816e91373e9eabda3f6b0368fc747b/codex-rs/core/src/client.rs#L957-L976), [서브 생성 경로](https://github.com/openai/codex/blob/6905ecede7816e91373e9eabda3f6b0368fc747b/codex-rs/core/src/agent/control/spawn.rs#L958-L968).
+## Main and subagent reasoning effort
 
-- **메인을 Ultra로 선택:** 확인한 Codex CLI `0.164.0-alpha.11.1`의 기본 카탈로그에서는 Sol 6.1과 Astra 모두 **`xhigh`**로 변환돼. 실제 값은 사용하는 엔진·모델 메타데이터에 따라 달라질 수 있어. [Astra 카탈로그](https://github.com/openai/codex/blob/6905ecede7816e91373e9eabda3f6b0368fc747b/codex-rs/models-manager/models.json#L22), [Sol 카탈로그](https://github.com/openai/codex/blob/6905ecede7816e91373e9eabda3f6b0368fc747b/codex-rs/models-manager/models.json#L195).
-- **이 템플릿의 서브 역할:** 각각 명시한 `high`·`xhigh`·`max`를 사용해. 예를 들어 메인이 Ultra여도 researcher는 `high`, implementer와 Terra는 `max`야.
-- **서브 자체를 Ultra로 선택:** 그 서브가 사용하는 모델의 `multi_agent_reasoning_effort`로 변환돼. 유효한 지정값이 없을 때의 대체 규칙은 [호환성 안내](docs/V2_COMPATIBILITY_KO.md)를 참고해.
+**The main agent and each subagent select their model and reasoning effort separately.** `multi_agent_reasoning_effort` is model metadata used to resolve an agent's final selected `Ultra` effort into an inference-request effort. Main agents and subagents use the same resolution rule, each with its own selected model's metadata. [Resolution code](https://github.com/openai/codex/blob/6905ecede7816e91373e9eabda3f6b0368fc747b/codex-rs/protocol/src/openai_models/reasoning_effort.rs#L8-L38), [ordinary request path](https://github.com/openai/codex/blob/6905ecede7816e91373e9eabda3f6b0368fc747b/codex-rs/core/src/client.rs#L957-L976), [subagent startup path](https://github.com/openai/codex/blob/6905ecede7816e91373e9eabda3f6b0368fc747b/codex-rs/core/src/agent/control/spawn.rs#L958-L968).
 
-**같은 모델 기준으로, 이 설정의 메인 Ultra(`xhigh`)보다 `max`로 지정한 서브가 더 높은 추론 강도를 사용해.** Sol 6.1 메인과 implementer·reviewer, Astra 메인과 deep_reasoner가 각각 그 예야. 모든 서브가 Max인 것은 아니며, 서로 다른 모델의 실제 성능은 별도로 비교해야 해.
+- **Main agent selected as Ultra:** In the checked Codex CLI `0.164.0-alpha.11.1` bundled catalog, both Sol 6.1 and Astra resolve to **`xhigh`**. The actual value can vary with the engine and model metadata in use. [Astra catalog](https://github.com/openai/codex/blob/6905ecede7816e91373e9eabda3f6b0368fc747b/codex-rs/models-manager/models.json#L22), [Sol catalog](https://github.com/openai/codex/blob/6905ecede7816e91373e9eabda3f6b0368fc747b/codex-rs/models-manager/models.json#L195).
+- **This template's subagent roles:** Each uses its explicitly assigned `high`, `xhigh`, or `max`. For example, with an Ultra main agent, researcher still uses `high`, while implementer and Terra use `max`.
+- **A subagent itself selected as Ultra:** Its own model's `multi_agent_reasoning_effort` is used. See the [compatibility guide](docs/V2_COMPATIBILITY.md) for fallback behavior when that metadata has no valid value.
 
-`.codex/config.toml`의 `[agents].default_subagent_reasoning_effort = "max"`는 서브 기본값에만 적용돼. 메인 강도는 앱에서 선택하고, 역할을 적용한 서브는 각 역할 TOML의 명시값을 따라.
+**For the same model, a subagent explicitly set to `max` uses a higher reasoning-effort setting than this setup's Ultra main agent (`xhigh`).** Examples are a Sol 6.1 main agent versus implementer or reviewer, and an Astra main agent versus deep_reasoner. Some roles use other effort levels; comparisons of actual performance across different models require separate evidence.
 
-## 메인이 맡는 일
+`[agents].default_subagent_reasoning_effort = "max"` in `.codex/config.toml` sets the subagent default only. Select the main agent's effort in the app; subagents using a role follow that role TOML's explicit settings.
 
-메인은 사용자가 앱에서 선택한 모델·모드를 유지하고, **사용자와의 조율·서브에이전트 업무 지시·결과 판단과 통합**을 중심으로 맡아. 목표와 제약을 정리하고 적절한 역할을 선택해 담당 범위·완료 기준·필요한 맥락을 전달하며, 작업 간 의존성과 공유 자원의 실행 순서를 조율해.
+## What the main agent does
 
-조사·설계·구현·GUI 작업은 독립적으로 진행할 가치가 있을 때 해당 서브에 맡겨. 메인은 결과의 근거·검증 범위·남은 문제를 확인하고 최종 채택을 판단해. 짧고 명확하거나 긴밀하게 연결된 순차 작업은 메인이 직접 처리해.
+The main agent retains the model and mode selected in the app and focuses on **coordinating with the user, assigning work to subagents, evaluating results, and integrating them**. It clarifies goals and constraints, selects roles, provides scope, acceptance criteria and necessary context, and coordinates dependencies and execution order for shared resources.
 
-## 포함한 역할
+Research, design, implementation, and GUI work go to the appropriate subagent when independent delegation is worthwhile. The main checks evidence, validation coverage, and unresolved issues before deciding what to accept. It handles short, clear tasks and tightly coupled sequential work directly.
 
-역할은 일반적이고 자주 쓰는 작업부터 설명하며 실제 선택은 작업 성격과 판단 필요성을 따라.
+## Included roles
 
-| 역할 | 모델 / 추론 강도 | 선택 기준 |
+Roles are listed from common, broadly applicable work to more specialized work. Select them by the task and the judgment required.
+
+| Role | Model / effort | When to use |
 |---|---|---|
-| implementer | `gpt-6.1-sol` / `max` | 일반 상세 설계·구현 계약 초안, 코드 분석·수정·검증 |
-| gui_operator | `gpt-6.1-terra` / `max` | 화면·브라우저·앱 조작, 시각 자료 해석, GUI 재현·확인 |
-| researcher | `gpt-6.1-sol` / `high` | 탐색 범위 결정·코드 경로 추적·여러 근거의 종합 |
-| reviewer | `gpt-6.1-sol` / `max` | 작성자와 독립적인 기존 요구·계약 준수 및 결함 검토 |
-| luna_worker | `gpt-6-luna` / `max` | 확정된 계약·소유 파일 안의 작은 구현·반복 변경 |
-| luna_researcher | `gpt-6-luna` / `max` | 지정 자료의 작은 추출·비교·정리·요약 |
-| architect | `gpt-6-astra` / `xhigh` | 핵심 구조·중요 계약의 선택·변경과 설계 충돌 해결 |
-| deep_reasoner | `gpt-6-astra` / `max` | 증거 정리 후에도 남는 특정 난제의 집중 검토 |
+| implementer | `gpt-6.1-sol` / `max` | Ordinary detailed design, implementation-contract drafts, code analysis, changes, and validation |
+| gui_operator | `gpt-6.1-terra` / `max` | Screen, browser, and app interaction; visual interpretation; GUI reproduction and behavior checks |
+| researcher | `gpt-6.1-sol` / `high` | Read-only research requiring search-scope decisions, code-path tracing, or synthesis of multiple sources |
+| reviewer | `gpt-6.1-sol` / `max` | Independent checks of existing requirements, contracts, and defects |
+| luna_worker | `gpt-6-luna` / `max` | Small implementation or repetitive changes with a fixed contract and owned files |
+| luna_researcher | `gpt-6-luna` / `max` | Bounded extraction, comparison, organization, or summaries from specified sources |
+| architect | `gpt-6-astra` / `xhigh` | Choosing or changing core architecture and consequential contracts; resolving design conflicts |
+| deep_reasoner | `gpt-6-astra` / `max` | Focused examination of a specific hard question remaining after evidence has been organized |
 
-- 열린 서브 최대 5개. 메인은 제외하고 하위 담당·대기 부모·완료 후 미폐쇄 스레드도 포함해.
-- Astra는 우선 1개부터 운영하고 독립 검토·하위 작업 슬롯을 확보해.
-- 메인→Sol/Astra 담당→Luna까지만 재위임해. 읽기 전용 담당은 luna_researcher만 호출해.
-- 메인→Terra 직접 배정, Terra·Luna 재위임 금지. 동일 GUI·기기는 메인이 실행 순서를 정해.
-- 역할별 모델·강도는 명시적으로 유지하고 지원되지 않는 값을 몰래 대체하지 않아.
-- 짧고 명확한 작업은 메인이 직접 처리해. 모든 역할을 순서대로 실행하는 절차가 아니야.
+- At most 5 open subagent threads, excluding the main. Descendants, waiting parents, and completed but unclosed threads all count.
+- Start with one Astra agent and reserve slots for independent review and child tasks.
+- Delegation is limited to main → Sol/Astra owner → Luna. Read-only owners may delegate only to luna_researcher.
+- Assign Terra directly from the main. Terra and Luna are leaves; the main schedules access to shared GUIs and devices.
+- Keep each role's explicit model and effort; do not silently substitute unsupported values.
+- The main handles short, clear work directly. The role list is not a mandatory execution sequence.
 
-## 파일 구성
+## Files and language variants
 
 ```text
-AGENTS.md                       # 프로젝트에 복사·병합할 공통 작업/분담 규칙
-.codex/config.toml              # 서브 기본값과 열린 스레드 한도
-.codex/agents/*.toml            # 8개 독립 역할 정의
-docs/APPLY_KO.md                # 새 프로젝트·기존 프로젝트 적용과 복원
-docs/V2_COMPATIBILITY_KO.md      # 호출 인자·실제 로드·검증 단계 구분
-.gitignore                     # 실행 결과·백업·비밀값 제외
+README.md                       # English overview
+AGENTS.md                       # English project work and delegation rules
+.codex/config.toml              # Subagent defaults and open-thread limit
+.codex/agents/*.toml            # Eight role definitions with English descriptions/instructions
+docs/APPLY.md                   # Applying, updating, and restoring the template
+docs/V2_COMPATIBILITY.md        # Tool arguments, actual loading, and verification stages
+kr/README.md                    # Korean overview
+kr/AGENTS.md                    # Korean project work and delegation rules
+kr/.codex/                     # Korean variant of the same role settings
+kr/docs/                       # Korean application and compatibility guides
+.gitignore                     # Excludes runtime output, backups, and secrets
 ```
 
-`AGENTS.md`와 `.codex`만 프로젝트에 적용하는 설정 파일이야. 이 템플릿의 README나 Git 설정을 기존 프로젝트에 통째로 덮어쓸 필요는 없어. `.codex/config.toml`과 `.codex/agents/*.toml`은 의도적으로 버전 관리하는 파일이야.
+Choose the repository root for English or `kr/` for Korean. Each is an installable variant: copy **only the selected variant's `AGENTS.md` and `.codex`** into a project. The English variant follows the user's preferred language and defaults to English when none is established; the Korean variant retains informal Korean communication. Both use the same models, effort levels, role assignments, and delegation limits.
 
-## 적용 방법
+README files and Git settings are repository documentation and do not need to replace a target project's files. `.codex/config.toml` and `.codex/agents/*.toml` are intentionally versioned.
 
-1. 사용할 템플릿 버전의 내용을 확인해. Git으로 관리할 때는 검증한 태그나 커밋을 기준으로 가져와.
-2. 대상 프로젝트의 기존 AGENTS.md·프로젝트 설정·동명 역할과 파일이 없던 상태를 백업해.
-3. 비어 있는 새 프로젝트에는 AGENTS.md와 `.codex`를 복사해. 기존 프로젝트에는 필요한 부분만 병합해.
-4. 해당 프로젝트만의 자료·서비스·권한·공유 자원·실행 절차·핵심 제약을 보충해.
-5. 대상 폴더를 프로젝트 루트로 열고 설정 로드 여부를 확인해. 프로젝트 설정은 신뢰된 프로젝트에서 로드돼.
-6. 실제 세션의 생성 도구 정의에 맞게 역할·모델·강도·컨텍스트 인자를 선택해. 첫 필요한 실제 위임에서 동작을 확인해.
+## Apply to a project
 
-자세한 절차는 [적용·복원 안내](docs/APPLY_KO.md), v2 관련 확인 범위는 [호환성 안내](docs/V2_COMPATIBILITY_KO.md)를 따라.
+1. Review the desired template revision and choose English (repository root) or Korean (`kr/`). Use a verified tag or commit when taking the template from Git.
+2. Back up the target project's AGENTS.md, project settings, colliding role definitions, and the fact that any new file did not previously exist.
+3. For an empty project, copy the selected variant's AGENTS.md and `.codex`. For an existing project, merge the required parts while preserving its rules and settings. Use one language variant at a time.
+4. Add the project's own data, service, permission, shared-resource, execution, and core-contract constraints.
+5. Open the target directory as the project root and check actual configuration loading. Project configuration loads for trusted projects.
+6. Use role, model, effort, and context arguments supported by the session's actual spawning tool. Check behavior during the first genuinely needed delegation.
 
-## 컨텍스트 전달
+See the [application and rollback guide](docs/APPLY.md) and [compatibility guide](docs/V2_COMPATIBILITY.md).
 
-| 정책 | v2 도구의 `fork_turns` | v1 도구의 `fork_context` |
+## Passing context
+
+| Policy | v2 tool's `fork_turns` | v1 tool's `fork_context` |
 |---|---|---|
-| 기본: 작업 지시와 필요한 정보만 전달 | `"none"` | `false` |
-| 필요 시: 전체 대화 이력 전달 | `"all"` | `true` |
+| Default: task instructions and necessary context only | `"none"` | `false` |
+| When needed: the full parent conversation history | `"all"` | `true` |
 
-도구가 해당 인자와 값을 실제로 제공할 때만 사용해. 버전 이름만으로 인자를 추정하거나 두 인자를 함께 보내지 않아. 컨텍스트 제어는 도구 호출 규칙이며 TOML 옵션이 아니야. 전체 이력 전달이 필요한 이유는 짧게 남겨.
+Use these arguments and values only when the actual tool exposes them. Select arguments from the real schema; do not infer them from a version name or send both forms together. Context selection is a tool-call policy. Do not invent TOML options for it. Briefly state why full history is needed.
 
-## 검증 범위와 Git 관리
+## Verification and Git boundaries
 
-TOML 9개, 역할 순서·모델·추론 강도·한도, 프로젝트 전용 내용 제거와 문서 링크를 확인했어.
+Checks cover TOML syntax, role order, models, efforts, limits, removal of project-specific material, and documentation links. Both language variants retain the same operational settings.
 
-새 프로젝트에서는 기존 설정과의 충돌·프로젝트 설정 로드·사용 가능한 도구와 모델을 확인하고, 첫 필요한 실제 작업에서 적용 결과를 확인해.
+In each target project, check configuration conflicts, actual project configuration loading, and available tools and models. Verify the result during the first genuinely needed task.
 
-Git 저장소에는 이 공통 템플릿과 문서만 넣어. 실제 프로젝트 코드·개인 절대 경로·장치 주소·서비스 설정·인증 정보·화면·대화·로그·런타임 상태·백업은 포함하지 않아. 원래 작업 프로젝트 전체를 템플릿 저장소로 만들지 않아.
+Keep only this shared template and its documentation in this repository. Keep actual project code, personal absolute paths, device addresses, service configuration, credentials, screenshots, conversations, logs, runtime state, and backups outside it. Do not turn the original working project into the template repository.
 
-역할 정책이나 호출 도구가 바뀌면 변경 내용과 근거를 기록하고 버전을 갱신해. 새 프로젝트에 자동 설치하는 전역 훅이나 상주 서비스는 포함하지 않아.
+Record changes and evidence when role policies or tool interfaces change, and update the template revision. No global installation hook or resident service is included.
 
-## 공식 근거
+## Official references
 
-- [독립 역할과 서브 기본 설정](https://learn.chatgpt.com/docs/agent-configuration/subagents)
-- [프로젝트 설정 범위와 우선순위](https://learn.chatgpt.com/docs/config-file/config-basic)
-- [AGENTS.md 로드 규칙](https://learn.chatgpt.com/docs/agent-configuration/agents-md)
-
+- [Custom roles and subagent defaults](https://learn.chatgpt.com/docs/agent-configuration/subagents)
+- [Project configuration scope and precedence](https://learn.chatgpt.com/docs/config-file/config-basic)
+- [AGENTS.md loading rules](https://learn.chatgpt.com/docs/agent-configuration/agents-md)
