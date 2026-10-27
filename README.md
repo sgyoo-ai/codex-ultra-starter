@@ -6,7 +6,16 @@
 
 - **GPT-6.1 Sol Ultra** 또는 **GPT-6 Astra Ultra**를 메인으로 사용하는 Codex 환경을 대상으로 해.
 - 메인 모델과 Ultra 모드는 Codex에서 선택하고, 서브에이전트의 모델·추론 강도는 아래 역할 설정을 따라.
-- Ultra의 실제 요청 추론 강도는 모델별 카탈로그 값을 따라. 확인한 Codex CLI `0.164.0-alpha.11.1`의 기본 카탈로그에서는 두 모델 모두 **`xhigh`**야. [변환 코드](https://github.com/openai/codex/blob/6905ecede7816e91373e9eabda3f6b0368fc747b/codex-rs/protocol/src/openai_models/reasoning_effort.rs#L8-L35), [Astra 카탈로그](https://github.com/openai/codex/blob/6905ecede7816e91373e9eabda3f6b0368fc747b/codex-rs/models-manager/models.json#L22), [Sol 카탈로그](https://github.com/openai/codex/blob/6905ecede7816e91373e9eabda3f6b0368fc747b/codex-rs/models-manager/models.json#L195).
+
+## 메인과 서브의 추론 강도
+
+**메인과 각 서브의 모델·추론 강도는 각각 정해져.** `multi_agent_reasoning_effort`는 각 에이전트의 최종 선택 강도가 `Ultra`일 때 실제 요청 강도로 변환하는 데 사용하는 모델별 메타데이터야. 메인과 서브 모두 이 변환 규칙을 사용하며, 각자 선택한 모델의 값을 읽어. [변환 코드](https://github.com/openai/codex/blob/6905ecede7816e91373e9eabda3f6b0368fc747b/codex-rs/protocol/src/openai_models/reasoning_effort.rs#L8-L38), [일반 요청 경로](https://github.com/openai/codex/blob/6905ecede7816e91373e9eabda3f6b0368fc747b/codex-rs/core/src/client.rs#L957-L976), [서브 생성 경로](https://github.com/openai/codex/blob/6905ecede7816e91373e9eabda3f6b0368fc747b/codex-rs/core/src/agent/control/spawn.rs#L958-L968).
+
+- **메인을 Ultra로 선택:** 확인한 Codex CLI `0.164.0-alpha.11.1`의 기본 카탈로그에서는 Sol 6.1과 Astra 모두 **`xhigh`**로 변환돼. 실제 값은 사용하는 엔진·모델 메타데이터에 따라 달라질 수 있어. [Astra 카탈로그](https://github.com/openai/codex/blob/6905ecede7816e91373e9eabda3f6b0368fc747b/codex-rs/models-manager/models.json#L22), [Sol 카탈로그](https://github.com/openai/codex/blob/6905ecede7816e91373e9eabda3f6b0368fc747b/codex-rs/models-manager/models.json#L195).
+- **이 템플릿의 서브 역할:** 각각 명시한 `high`·`xhigh`·`max`를 사용해. 예를 들어 메인이 Ultra여도 researcher는 `high`, implementer와 Terra는 `max`야.
+- **서브 자체를 Ultra로 선택:** 그 서브가 사용하는 모델의 `multi_agent_reasoning_effort`로 변환돼. 유효한 지정값이 없을 때의 대체 규칙은 [호환성 안내](docs/V2_COMPATIBILITY_KO.md)를 참고해.
+
+`.codex/config.toml`의 `[agents].default_subagent_reasoning_effort = "max"`는 서브 기본값에만 적용돼. 메인 강도는 앱에서 선택하고, 역할을 적용한 서브는 각 역할 TOML의 명시값을 따라.
 
 ## 포함한 역할
 

@@ -4,12 +4,14 @@
 
 템플릿은 버전을 강제하거나 전환하지 않아. 지원이 확인되지 않은 버전 전환·컨텍스트 제어·재위임 깊이 설정 키를 임의로 추가하지 마.
 
-## Ultra의 실제 메인 추론 강도
+## 에이전트별 추론 강도와 Ultra 변환
 
-- Codex는 선택된 `Ultra`를 모델의 `multi_agent_reasoning_effort`로 변환해. 유효한 모델 지정값이 없으면 지원되는 Max, 그 외 지원 목록의 마지막 non-Ultra 값, Medium 순으로 선택해. [정규화 구현](https://github.com/openai/codex/blob/6905ecede7816e91373e9eabda3f6b0368fc747b/codex-rs/protocol/src/openai_models/reasoning_effort.rs#L8-L35).
-- 이 정규화는 일반 추론 요청의 `reasoning.effort`를 구성하는 경로에도 사용돼. 서브에이전트 기본값만 설명하는 필드로 해석하지 않아. [요청 구성 코드](https://github.com/openai/codex/blob/6905ecede7816e91373e9eabda3f6b0368fc747b/codex-rs/core/src/client.rs#L957-L976).
+- 메인과 각 서브의 모델·추론 강도는 각각 선택돼. 역할·호출 인자·기본값 등을 반영한 **해당 에이전트의 최종 선택 강도가 `Ultra`일 때** 그 에이전트 모델의 `multi_agent_reasoning_effort`로 변환해. 부모가 Ultra라는 사실만으로 자식의 강도를 결정하지 않아.
+- 유효한 모델 지정값이 없으면 지원되는 Max, 그 외 지원 목록의 마지막 non-Ultra 값, Medium 순으로 선택해. 명시한 `high`·`xhigh`·`max`는 이 Ultra 변환에서 그대로 유지돼. [정규화 구현](https://github.com/openai/codex/blob/6905ecede7816e91373e9eabda3f6b0368fc747b/codex-rs/protocol/src/openai_models/reasoning_effort.rs#L8-L38).
+- 같은 정규화가 일반 추론 요청의 `reasoning.effort` 구성과 서브 생성 경로에 사용돼. 같은 변환 규칙을 사용해도 각 에이전트의 선택 모델·강도가 다르면 결과도 달라져. [요청 구성 코드](https://github.com/openai/codex/blob/6905ecede7816e91373e9eabda3f6b0368fc747b/codex-rs/core/src/client.rs#L957-L976), [서브 생성 코드](https://github.com/openai/codex/blob/6905ecede7816e91373e9eabda3f6b0368fc747b/codex-rs/core/src/agent/control/spawn.rs#L958-L968).
 - 확인한 `0.164.0-alpha.11.1` 태그와 설치본의 기본 카탈로그에서는 `gpt-6-astra`, `gpt-6.1-sol` 모두 해당 값이 `xhigh`야. [Astra](https://github.com/openai/codex/blob/6905ecede7816e91373e9eabda3f6b0368fc747b/codex-rs/models-manager/models.json#L22), [Sol](https://github.com/openai/codex/blob/6905ecede7816e91373e9eabda3f6b0368fc747b/codex-rs/models-manager/models.json#L195).
-- 실제 적용값은 해당 세션이 사용하는 모델 메타데이터와 엔진 버전에 따라 확인해. 모든 Codex 버전에서 메인이 high로 고정된다고 가정하지 마. 이 템플릿은 메인 모델·모드를 덮어쓰지 않고 역할별 서브 설정을 지정해.
+- 이 템플릿은 모든 서브 역할에 `high`·`xhigh`·`max`를 명시해. 메인이 Ultra여도 researcher는 high, implementer·Terra는 max, architect는 xhigh를 사용해. `[agents].default_subagent_reasoning_effort = "max"`는 서브 기본값이며 메인 강도를 설정하지 않아. 명시 설정이 없는 다른 구성에서는 엔진의 기본값·상속 규칙을 별도로 확인해.
+- 실제 적용값은 해당 세션이 사용하는 모델 메타데이터와 엔진 버전에 따라 확인해. 이 템플릿은 메인 모델·모드를 덮어쓰지 않고 역할별 서브 설정을 지정해. 기본 카탈로그 확인과 현재 세션의 실제 요청·서버 내부 동작 측정은 구분해.
 
 ## 컨텍스트 선택
 
