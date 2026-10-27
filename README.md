@@ -6,6 +6,7 @@
 
 - **GPT-6.1 Sol Ultra** 또는 **GPT-6 Astra Ultra**를 메인으로 사용하는 Codex 환경을 대상으로 해.
 - 메인 모델과 Ultra 모드는 Codex에서 선택하고, 서브에이전트의 모델·추론 강도는 아래 역할 설정을 따라.
+- Ultra의 실제 요청 추론 강도는 모델별 카탈로그 값을 따라. 확인한 Codex CLI `0.164.0-alpha.11.1`의 기본 카탈로그에서는 두 모델 모두 **`xhigh`**야. [변환 코드](https://github.com/openai/codex/blob/6905ecede7816e91373e9eabda3f6b0368fc747b/codex-rs/protocol/src/openai_models/reasoning_effort.rs#L8-L35), [Astra 카탈로그](https://github.com/openai/codex/blob/6905ecede7816e91373e9eabda3f6b0368fc747b/codex-rs/models-manager/models.json#L22), [Sol 카탈로그](https://github.com/openai/codex/blob/6905ecede7816e91373e9eabda3f6b0368fc747b/codex-rs/models-manager/models.json#L195).
 
 ## 포함한 역할
 

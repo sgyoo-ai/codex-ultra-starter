@@ -4,6 +4,13 @@
 
 템플릿은 버전을 강제하거나 전환하지 않아. 지원이 확인되지 않은 버전 전환·컨텍스트 제어·재위임 깊이 설정 키를 임의로 추가하지 마.
 
+## Ultra의 실제 메인 추론 강도
+
+- Codex는 선택된 `Ultra`를 모델의 `multi_agent_reasoning_effort`로 변환해. 유효한 모델 지정값이 없으면 지원되는 Max, 그 외 지원 목록의 마지막 non-Ultra 값, Medium 순으로 선택해. [정규화 구현](https://github.com/openai/codex/blob/6905ecede7816e91373e9eabda3f6b0368fc747b/codex-rs/protocol/src/openai_models/reasoning_effort.rs#L8-L35).
+- 이 정규화는 일반 추론 요청의 `reasoning.effort`를 구성하는 경로에도 사용돼. 서브에이전트 기본값만 설명하는 필드로 해석하지 않아. [요청 구성 코드](https://github.com/openai/codex/blob/6905ecede7816e91373e9eabda3f6b0368fc747b/codex-rs/core/src/client.rs#L957-L976).
+- 확인한 `0.164.0-alpha.11.1` 태그와 설치본의 기본 카탈로그에서는 `gpt-6-astra`, `gpt-6.1-sol` 모두 해당 값이 `xhigh`야. [Astra](https://github.com/openai/codex/blob/6905ecede7816e91373e9eabda3f6b0368fc747b/codex-rs/models-manager/models.json#L22), [Sol](https://github.com/openai/codex/blob/6905ecede7816e91373e9eabda3f6b0368fc747b/codex-rs/models-manager/models.json#L195).
+- 실제 적용값은 해당 세션이 사용하는 모델 메타데이터와 엔진 버전에 따라 확인해. 모든 Codex 버전에서 메인이 high로 고정된다고 가정하지 마. 이 템플릿은 메인 모델·모드를 덮어쓰지 않고 역할별 서브 설정을 지정해.
+
 ## 컨텍스트 선택
 
 | 의도 | v2 도구의 `fork_turns` | v1 도구의 `fork_context` |
