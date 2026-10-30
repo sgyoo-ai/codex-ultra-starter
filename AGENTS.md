@@ -11,7 +11,8 @@ These rules apply to the project containing this file and its working subdirecto
 - Preserve user material, existing files, uncommitted and other workers' changes, and running services. Keep unrelated improvements separate and do not arbitrarily change other projects or global settings.
 - Installation, spending, deployment, external transmission, device/app operation, and permission/network/audio changes must remain within the current request's authorization. Avoid broad process termination. Before a restart, check its target, impact, and existing authorization.
 - Do not collect secrets, cookies, private conversations, full environments, Keychain contents, or protected permission databases for investigation.
-- Perform validation needed for the change. Avoid unnecessary large tests or model calls, and do not treat brief silence as a reason to fail or terminate a long-running task.
+- Add abstractions or extract functions only when they clearly improve readability, responsibility boundaries, reuse, or testability; avoid one-off helpers, wrappers, interfaces, and structures for speculative future needs without those benefits.
+- Perform validation needed for the change. Avoid unnecessary large tests or model calls, and do not treat brief silence as a reason to fail or terminate a long-running task. Reuse valid verification evidence for unaffected code and conditions, while retaining necessary additional checks and existing requirements for independent review.
 - Distinguish actual changes, checks, and unknowns. Writing code, building, installing, running, and user confirmation are separate stages. Record important decisions, completion status, blockers, and next actions in project documentation.
 - Do not install memory automation, log collectors, schedulers, or resident services unless requested.
 
